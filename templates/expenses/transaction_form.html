@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} - Personal Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card app-card shadow-sm">
+      <div class="card-header bg-white py-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 fw-bold text-primary">
+            {% if 'Edit' in page_title %}
+              <i class="bi bi-pencil-square me-2"></i>
+            {% else %}
+              <i class="bi bi-plus-circle me-2"></i>
+            {% endif %}
+            {{ page_title }}
+          </h4>
+          <a href="{% url 'transaction_list' %}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back
+          </a>
+        </div>
+      </div>
+
+      <div class="card-body p-4">
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger py-2 small" role="alert">
+            {% for error in form.non_field_errors %}
+              <div><i class="bi bi-exclamation-triangle-fill me-1"></i>{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <!-- Transaction Type -->
+          <div class="mb-3">
+            <label for="{{ form.transaction_type.id_for_label }}" class="form-label fw-semibold">
+              <i class="bi bi-arrow-left-right text-muted me-1"></i> {{ form.transaction_type.label }}
+            </label>
+            {{ form.transaction_type }}
+            {% for error in form.transaction_type.errors %}
+              <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Amount -->
+          <div class="mb-3">
+            <label for="{{ form.amount.id_for_label }}" class="form-label fw-semibold">
+              <i class="bi bi-currency-rupee text-muted me-1"></i> {{ form.amount.label }}
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">₹</span>
+              {{ form.amount }}
+            </div>
+            {% for error in form.amount.errors %}
+              <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Category -->
+          <div class="mb-3">
+            <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">
+              <i class="bi bi-tags text-muted me-1"></i> {{ form.category.label }}
+            </label>
+            {{ form.category }}
+            {% for error in form.category.errors %}
+              <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Date -->
+          <div class="mb-3">
+            <label for="{{ form.date.id_for_label }}" class="form-label fw-semibold">
+              <i class="bi bi-calendar3 text-muted me-1"></i> {{ form.date.label }}
+            </label>
+            {{ form.date }}
+            {% for error in form.date.errors %}
+              <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">
+              <i class="bi bi-card-text text-muted me-1"></i> {{ form.description.label }}
+            </label>
+            {{ form.description }}
+            <div class="form-text small text-muted">A quick note to remember what this was for.</div>
+            {% for error in form.description.errors %}
+              <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 pt-2">
+            <a href="{% url 'transaction_list' %}" class="btn btn-light border px-4">Cancel</a>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+              <i class="bi bi-check-lg me-1"></i> {{ button_text }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

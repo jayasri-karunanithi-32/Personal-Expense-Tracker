@@ -1,0 +1,143 @@
+/* Personal Expense Tracker Custom Styles */
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+  --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --surface-color: #ffffff;
+  --bg-color: #f8fafc;
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* Navbar styling */
+.navbar-custom {
+  background: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Dashboard Summary Cards */
+.stat-card {
+  border: none;
+  border-radius: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card .card-body {
+  padding: 1.5rem;
+}
+
+.stat-card .stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.stat-card.income-card {
+  background: #ecfdf5;
+  border-left: 4px solid #10b981;
+}
+.stat-card.income-card .stat-icon {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.stat-card.expense-card {
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+}
+.stat-card.expense-card .stat-icon {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.stat-card.balance-card {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+}
+.stat-card.balance-card .stat-icon {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.stat-card.count-card {
+  background: #faf5ff;
+  border-left: 4px solid #8b5cf6;
+}
+.stat-card.count-card .stat-icon {
+  background: #8b5cf6;
+  color: #ffffff;
+}
+
+/* Content cards */
+.app-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  background: #ffffff;
+}
+
+.app-card .card-header {
+  background-color: transparent;
+  border-bottom: 1px solid #f1f5f9;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+}
+
+/* Badges */
+.badge-income {
+  background-color: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+}
+
+.badge-expense {
+  background-color: #fee2e2;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+/* Transaction Amount colors */
+.amount-income {
+  color: #059669;
+  font-weight: 600;
+}
+
+.amount-expense {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}

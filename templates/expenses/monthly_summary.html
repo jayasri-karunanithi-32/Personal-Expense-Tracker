@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}Monthly Summary - Personal Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-2">
+  <div>
+    <h2 class="h3 fw-bold mb-1">Monthly Summary</h2>
+    <p class="text-muted mb-0">Detailed breakdown of income, expenses, and category trends.</p>
+  </div>
+
+  <!-- Month & Year Selector -->
+  <form method="get" class="d-flex align-items-center gap-2">
+    <select name="month" class="form-select form-select-sm" aria-label="Select Month">
+      {% for m_num, m_name in month_choices %}
+        <option value="{{ m_num }}" {% if m_num == selected_month %}selected{% endif %}>
+          {{ m_name }}
+        </option>
+      {% endfor %}
+    </select>
+    <select name="year" class="form-select form-select-sm" aria-label="Select Year">
+      {% for y in year_choices %}
+        <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>
+          {{ y }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-sm btn-primary text-nowrap">
+      <i class="bi bi-arrow-clockwise me-1"></i> View
+    </button>
+  </form>
+</div>
+
+<!-- Monthly KPI Cards -->
+<div class="row g-3 mb-4">
+  <!-- Month Income -->
+  <div class="col-12 col-md-4">
+    <div class="card stat-card income-card shadow-sm h-100">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small text-uppercase fw-semibold">{{ selected_month_name }} Income</span>
+          <h3 class="fw-bold text-success mt-1 mb-0">₹{{ income_sum|floatformat:2 }}</h3>
+        </div>
+        <div class="stat-icon">
+          <i class="bi bi-arrow-down-left"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Month Expenses -->
+  <div class="col-12 col-md-4">
+    <div class="card stat-card expense-card shadow-sm h-100">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small text-uppercase fw-semibold">{{ selected_month_name }} Expenses</span>
+          <h3 class="fw-bold text-danger mt-1 mb-0">₹{{ expense_sum|floatformat:2 }}</h3>
+        </div>
+        <div class="stat-icon">
+          <i class="bi bi-arrow-up-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Month Balance -->
+  <div class="col-12 col-md-4">
+    <div class="card stat-card balance-card shadow-sm h-100">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small text-uppercase fw-semibold">{{ selected_month_name }} Balance</span>
+          <h3 class="fw-bold {% if balance >= 0 %}text-primary{% else %}text-danger{% endif %} mt-1 mb-0">
+            ₹{{ balance|floatformat:2 }}
+          </h3>
+        </div>
+        <div class="stat-icon">
+          <i class="bi bi-wallet2"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Category Breakdown & Chart Row -->
+<div class="row g-4">
+  <!-- Left Column: Category Table -->
+  <div class="col-12 col-lg-7">
+    <div class="card app-card shadow-sm h-100">
+      <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold">
+          <i class="bi bi-list-ul text-primary me-2"></i>Expense Breakdown by Category
+        </h5>
+      </div>
+      <div class="card-body p-0">
+        {% if breakdown_list %}
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col" class="ps-4">Category</th>
+                  <th scope="col" class="text-end">Amount</th>
+                  <th scope="col" class="pe-4" style="width: 40%;">Share</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in breakdown_list %}
+                  <tr>
+                    <td class="ps-4 fw-medium">{{ item.category }}</td>
+                    <td class="text-end font-monospace fw-semibold text-danger">
+                      ₹{{ item.total|floatformat:2 }}
+                    </td>
+                    <td class="pe-4">
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="progress flex-grow-1" style="height: 8px;">
+                          <div class="progress-bar bg-primary" role="progressbar" style="width: {{ item.percentage }}%;" aria-valuenow="{{ item.percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span class="small text-muted font-monospace" style="min-width: 45px;">{{ item.percentage }}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <div class="display-6 text-muted mb-2"><i class="bi bi-cash-stack"></i></div>
+            <h6 class="fw-semibold">No Expense Records for {{ selected_month_name }} {{ selected_year }}</h6>
+            <p class="text-muted small mb-3">Add expenses for this period to see the category breakdown.</p>
+            <a href="{% url 'transaction_add' %}" class="btn btn-sm btn-primary">
+              <i class="bi bi-plus-lg me-1"></i> Add Transaction
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Visual Chart -->
+  <div class="col-12 col-lg-5">
+    <div class="card app-card shadow-sm h-100">
+      <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold">
+          <i class="bi bi-pie-chart text-primary me-2"></i>Expense Distribution
+        </h5>
+      </div>
+      <div class="card-body d-flex flex-column align-items-center justify-content-center p-4">
+        {% if has_expenses %}
+          <div style="position: relative; width: 100%; max-width: 320px; height: 300px;">
+            <canvas id="categoryExpenseChart"></canvas>
+          </div>
+        {% else %}
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-pie-chart display-5 mb-2 d-block"></i>
+            <p class="small mb-0">No chart data available for {{ selected_month_name }} {{ selected_year }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if has_expenses %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const labels = {{ chart_labels_json|safe }};
+    const data = {{ chart_data_json|safe }};
+    
+    // Aesthetic palette matching modern design
+    const colorPalette = [
+      '#4f46e5', '#3b82f6', '#06b6d4', '#10b981', 
+      '#f59e0b', '#ec4899', '#8b5cf6', '#64748b', '#ef4444'
+    ];
+
+    const ctx = document.getElementById('categoryExpenseChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: colorPalette.slice(0, labels.length),
+          borderWidth: 2,
+          borderColor: '#ffffff',
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              boxWidth: 12,
+              padding: 15,
+              font: {
+                size: 12
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                return ' ' + label + ': ₹' + value.toFixed(2);
+              }
+            }
+          }
+        },
+        cutout: '65%'
+      }
+    });
+  });
+</script>
+{% endif %}
+{% endblock %}

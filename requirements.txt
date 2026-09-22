@@ -1,0 +1,2 @@
+# Requirements for Personal Expense Tracker
+Django>=5.0,<7.0
